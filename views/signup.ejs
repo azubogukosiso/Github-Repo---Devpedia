@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('./partials/head.ejs') %>
+<body>
+
+    <%- include('./partials/nav.ejs') %>
+
+    <div class="container">
+        <h2 class="my-5 text-center">Sign Up</h2>
+
+        <form class="justify-content-center d-flex flex-column">
+            <label for="email">Enter username:</label>
+            <input type="text" name="username" required>
+            <div class="username error"></div><br>
+
+            <label for="email">Enter email:</label>
+            <input type="text" name="email" required>
+            <div class="email error"></div><br>
+
+            <label for="password">Enter password:</label>
+            <input type="password" name="password" required>
+            <div class="password error"></div><br>
+
+            <label for="image">Select a profile picture:</label>
+            <input type="file" name="profile_image" id="profile_image"><br>
+
+            <button class="submit btn-primary px-3 py-2">Sign Up</button>
+        </form>
+
+        <p class="mt-3 text-center">Already have an account? then <a href="/login">click to login</a></p>
+    </div>
+
+    <%- include('./partials/footer.ejs') %>
+
+    <script>
+        const form = document.querySelector('form');
+        const usernameError = document.querySelector('.username.error');
+        const emailError = document.querySelector('.email.error');
+        const passwordError = document.querySelector('.password.error');
+        const input = document.getElementById('profile_image');
+
+        const checkFile = (file) => {
+
+            if (!file){
+                console.log('no image!');
+                return;
+            } else{
+                // check file type - if it's an image
+                if(!['image/jpeg', 'image/gif', 'image/png', 'image/svg+xml'].includes(file.type)) {
+                    console.log('Only images are allowed!');
+                    return;
+                }
+
+                // check file size (< 2MB)
+                if(file.size > 2 * 1024 * 1024) {
+                    console.log('File size must be less than 2MB!');
+                    return;
+                }
+            }
+        }
+
+        form.addEventListener('submit', async (e) => {
+            
+            e.preventDefault();
+
+            // reset errors
+            usernameError.textContent = '';
+            emailError.textContent = '';
+            passwordError.textContent = '';
+
+            // run fxn to check the file's validity
+            checkFile(input.files[0]);
+
+            // sends the form data and gets response
+            const response = await fetch('/signup', {
+                method: 'POST',
+                body: new FormData(form)
+            });
+            const data = await response.json();
+            
+            if (data.errors) {  // show error msg on form if any
+                usernameError.textContent = data.errors.username;
+                emailError.textContent = data.errors.email;
+                passwordError.textContent = data.errors.password;
+            }
+            if (data.user) {    // if there are no errors, sign in the user
+                location.assign('/');
+            }
+        });
+    </script>
+</body>
+</html>

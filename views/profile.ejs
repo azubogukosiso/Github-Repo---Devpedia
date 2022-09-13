@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('./partials/head.ejs') %>
+<body>
+
+    <%- include('./partials/nav.ejs') %>
+
+    <div class="container">
+        <h2 class="my-5 text-center">Profile</h2>
+
+        <% if (user) { %>
+            <% if (user.profile_image == '{}'){ %>
+                <div class="image-border mx-auto mb-4">
+                    <img class="image" src="" >
+                </div>
+            <% } else { %>    
+                <div class="image-border mx-auto mb-4">
+                    <img class="image" src="data:image/<%= user.profile_image.contentType %>;base64,
+                    <%= user.profile_image.data.toString('base64') %>" >
+                </div>
+            <% } %>
+            <div class="text-center"><span class="text-center">Username: <%= user.username %></span><span class="small"><a href="" class="ms-3">change</a></span></div>
+            <div class="text-center my-3"><span class="text-center">User email: <%= user.email %></span><span class="small"><a href="" class="ms-3">change</a></span></div>
+            <div class="text-center"><a href="" class="btn btn-primary">change password</a></div>
+        <% } %>
+
+        
+    </div>
+
+    <%- include('./partials/footer.ejs') %>
+</body>
+</html>

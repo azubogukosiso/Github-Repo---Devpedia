@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('./partials/head.ejs') %>
+<body>
+    <%- include('./partials/nav.ejs') %>
+
+    <div class="container">
+        <h2 class="my-5 text-center">Most Recent Blogs</h2>
+
+        <div class="row justify-content-evenly">
+            <% if (blogs.length > 0) { %>
+                <% blogs.forEach(blog => { %>
+                    <% if (blog.header_image.data == undefined) { %>
+                        <div class="card mb-5 col-11 col-sm-5 p-0">
+                            <a href="/blogs/<%= blog.id %>" class="text-dark text-decoration-none">
+                                <img src="default.png" class="card-img-top">
+                                <div class="card-body">
+                                    <h5 class="card-title"><%= blog.title %></h5>
+                                    <p class="card-text"><%= blog.snippet %></p>
+                                    <p class="card-text"><small class="text-muted">Posted by <%= blog.author %> on <%= blog.createdAt %></small></p>
+                                </div>
+                            </a>
+                        </div>
+                    <% } else { %>
+                        <div class="card mb-5 col-11 col-sm-5 p-0">
+                            <a href="/blogs/<%= blog.id %>" class="text-dark text-decoration-none">
+                                <img src="data:image/<%= blog.header_image.contentType %>;base64,
+                                <%= blog.header_image.data.toString('base64') %>" class="card-img-top">
+                                <div class="card-body">
+                                    <h5 class="card-title"><%= blog.title %></h5>
+                                    <p class="card-text"><%= blog.snippet %></p>
+                                    <p class="card-text"><small class="text-muted">Posted by <%= blog.author %> on <%= blog.createdAt %></small></p>
+                                </div>
+                            </a>
+                        </div>
+                    <% } %>
+                <% }) %>
+            <% } else { %>
+                <h3>No blogs available!</h3>
+            <% } %>
+        </div>
+    </div>
+
+    <%- include('./partials/footer.ejs') %>
+</body>
+</html>

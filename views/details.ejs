@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('./partials/head.ejs') %>
+<body>
+    <%- include('./partials/nav.ejs') %>
+
+    <div class="details container">
+        <div class="text-center my-5">
+            <h2><%= blog.title %></h2>
+            <p>by <%= blog.author %></p>
+        </div>
+
+        <% if (blog.content_image.data == undefined) { %>
+            <div class="mx-auto my-5">
+                <img class="img-fluid rounded" src="http://localhost:3000/default.png" alt="">
+            </div>
+        <% } else { %>
+            <div class="mx-auto my-5">
+                <img class="img-fluid rounded" src="data:image/<%= blog.content_image.contentType %>;base64,
+                <%= blog.content_image.data.toString('base64') %>" alt="">
+            </div>
+        <% } %>
+
+        <div>
+            <p><%= blog.body %></p>
+        </div>
+
+        <div class="d-flex my-5 justify-content-center">
+            <% if (blog.author == user.username) { %>
+                <a class="edit btn btn-secondary text-decoration-none mx-3" data-doc="<%= blog._id %>" href="/blogs/<%= blog.id %>/editblog">edit</a>
+            <% } else { %>
+                <a class="edit btn btn-secondary text-decoration-none mx-3 d-none" data-doc="<%= blog._id %>">edit</a>
+            <% } %>
+            <% if (blog.author == user.username) { %>
+                <a class="delete btn btn-danger text-decoration-none mx-3" data-doc="<%= blog._id %>">delete</a>
+            <% } else { %>
+                <a class="delete btn btn-danger text-decoration-none mx-3 d-none" data-doc="<%= blog._id %>">delete</a>
+            <% } %>
+            <a id="LikeBtn" class="like btn btn-light border-success text-decoration-none mx-3" data-doc="<%= blog._id %>">like</a>
+            <span id="like-count"></span>
+        </div>
+
+        <div>
+            <form class="justify-content-center d-flex flex-column">
+                <label for="comment">Drop a Comment</label>
+                <textarea name="comment" required></textarea><br>
+                <button class="submit btn-primary px-3 py-2">Submit Comment</button>
+                <p id="alert" class="confirm-submit text-center my-3 px-3 py-2"></p>
+            </form>
+        </div>
+
+        <a class="view-comments btn btn-primary" data-doc="<%= blog._id %>">show comments</a>
+
+        <div class="comments mt-5 px-3 py-3" id="comments"></div>
+    </div>
+
+    <%- include('./partials/footer.ejs') %>
+
+    <script>
+        // deletes the blog
+        const deleteBtn = document.querySelector('a.delete');
+        deleteBtn.addEventListener('click', (e) => {
+            const endpoint1 = `/blogs/${deleteBtn.dataset.doc}`;
+
+            fetch(endpoint1, {
+                method: 'DELETE'
+            })
+                .then((response) => response.json())
+                .then((data) => window.location.href = data.redirect)
+                .catch(err => console.log(err));
+        })
+
+        // likes a blog
+        const likeBtn = document.querySelector('a.like');
+        const likeCount = document.getElementById('like-count');
+        likeBtn.addEventListener('click', async(e) => {
+            const endpoint2 = `/blogs/${likeBtn.dataset.doc}/toggle-like`;
+
+            await fetch(endpoint2, {
+                method: 'POST'
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.message === 'Liked'){
+                        document.getElementById("LikeBtn").classList.add('btn-success');
+                        document.getElementById("LikeBtn").classList.remove('btn-light');
+                        document.getElementById("LikeBtn").innerHTML = 'liked';
+                    } else if(data.message === 'Unliked'){
+                        document.getElementById("LikeBtn").classList.remove('btn-success');
+                        document.getElementById("LikeBtn").classList.add('btn-light');
+                        document.getElementById("LikeBtn").innerHTML = 'like';
+                    }
+                })
+                .catch(err => console.log(err));
+            
+            const endpoint3 = `/blogs/${likeBtn.dataset.doc}/bloglikenum`;
+            fetch(endpoint3)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.message == 0){
+                    likeCount.innerHTML = 'No likes yet';
+                }else if(data.message == 1){
+                    likeCount.innerHTML = `${data.message} like`;
+                } else{
+                    likeCount.innerHTML = `${data.message} likes`;
+                }
+            });
+        })
+
+        // checks if a blog has been liked before
+        const endpoint4 = `/blogs/${deleteBtn.dataset.doc}/checkforlike`; 
+        fetch(endpoint4)
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === 'Exists'){
+                    document.getElementById("LikeBtn").classList.add('btn-success');
+                    document.getElementById("LikeBtn").classList.remove('btn-light');
+                    document.getElementById("LikeBtn").innerHTML = 'liked';
+                } else if(data.message === 'Does not exist'){
+                    document.getElementById("LikeBtn").classList.remove('btn-success');
+                    document.getElementById("LikeBtn").classList.add('btn-light');
+                    document.getElementById("LikeBtn").innerHTML = 'like';
+                }
+            });
+
+        // checks for the number of likes a blog has
+        const likeCountTwo = document.getElementById('like-count');
+        const endpoint5 = `/blogs/${deleteBtn.dataset.doc}/bloglikenum`;
+        fetch(endpoint5)
+            .then(response => response.json())
+            .then(data => {
+                if (data.message == 0){
+                    likeCountTwo.innerHTML = 'No likes yet';
+                }else if(data.message == 1){
+                    likeCountTwo.innerHTML = `${data.message} like`;
+                } else{
+                    likeCountTwo.innerHTML = `${data.message} likes`;
+                }
+            });
+
+        // posts comments to a blog
+        const form = document.querySelector('form');
+        const confirmSubmit = document.querySelector('.confirm-submit');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const comment = form.comment.value; // get values
+
+            try{
+                const res = await fetch(`/blogs/${deleteBtn.dataset.doc}/post-comment`, {
+                    method: 'POST',
+                    body: JSON.stringify({ comment }),
+                    headers: {'Content-Type': 'application/json'}
+                })
+                const data = await res.json();
+                if (data){
+                    document.getElementById("alert").classList.add('alert', 'alert-warning');
+                    confirmSubmit.textContent = 'Your comment has been submitted';
+                    location.assign(`/blogs/${deleteBtn.dataset.doc}`);
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        });
+
+        // fetch and display comments
+        const viewCommentBtn = document.querySelector('a.view-comments');
+        const commentSection = document.getElementById('comments');
+        viewCommentBtn.addEventListener('click', (e) => {
+            if (commentSection.innerText === "") {
+                const endpoint5 = `/blogs/${viewCommentBtn.dataset.doc}/view-comments`;
+                fetch(endpoint5)
+                    .then(response => response.json())
+                    .then(data => {
+                        const comments = data.comments;
+
+                        if (comments.length > 0){
+                            comments.forEach(comment => {
+                                viewCommentBtn.innerText = "hide comments";
+                                commentSection.innerHTML += `<div class="bg-light px-3 py-3 rounded"><strong>${comment.username}</strong> <br> ${comment.comment} <br> <small>posted on ${comment.createdAt}</small></div> <br>`;
+                            })
+                        } else{
+                            commentSection.innerHTML = `<div>No comments yet</div>`;
+                        }
+                    })
+            }else{
+                commentSection.innerText = "";
+                viewCommentBtn.innerText = "show comments";
+            }
+        });
+    </script>
+</body>
+</html>

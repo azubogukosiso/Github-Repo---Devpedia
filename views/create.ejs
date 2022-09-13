@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('./partials/head.ejs') %>
+<body>
+
+    <%- include('./partials/nav.ejs') %>
+
+    <div class="container">
+        <h2 class="my-5 text-center">Create a New Blog</h2>
+
+        <form class="justify-content-center d-flex flex-column">
+            <% if (user) { %>
+                <input type="text" name="author" value="<%= user.username %>" hidden required><br><br>
+                <!-- <p>Blog Author: <%= user.username %></p> -->
+            <% } %>
+            
+            <label for="title">Blog Title:</label>
+            <input type="text" name="title" required><br><br>
+
+            <label for="snippet">Blog Snippet:</label>
+            <input type="text" name="snippet" required><br><br>
+
+            <label for="body">Blog Body:</label>
+            <textarea name="body" rows="5" required></textarea><br><br>
+
+            <label for="image">Select a Header Image (optional):</label>
+            <input type="file" name="header_image" id="header_image"><br><br>
+
+            <label for="image">Select a Content Image (optional):</label>
+            <input type="file" name="content_image" id="content_image"><br><br>
+            
+            <button class="submit btn-primary px-3 py-2">Submit</button>
+        </form>
+    </div>
+
+    <%- include('./partials/footer.ejs') %>
+
+    <script>
+        const form = document.querySelector('form');
+        const headerImg = document.getElementById('header_image');
+        const contentImg = document.getElementById('content_image');
+
+        const checkFile = (file) => {
+            if (!file){
+                console.log('no image!');
+                return;
+            } else{
+                // check file type - if it's an image
+                if(!['image/jpeg', 'image/gif', 'image/png', 'image/svg+xml'].includes(file.type)) {
+                    console.log('Only images are allowed!');
+                    return;
+                }
+
+                // check file size (< 2MB)
+                if(file.size > 2 * 1024 * 1024) {
+                    console.log('File size must be less than 2MB!');
+                    return;
+                }
+            }
+        }
+
+        form.addEventListener('submit', async (e) => {
+
+            e.preventDefault();
+
+            // run fxn to check the files' validity
+            checkFile(headerImg.files[0]);
+            checkFile(contentImg.files[0]);
+
+            // sends the form data and gets response
+            const response = await fetch('/blogs', {
+                method: 'POST',
+                body: new FormData(form)
+            });
+            const data = await response.json();
+
+            if (data.error) {
+                console.log(data.error);
+            }
+            if (data.success) { // if there are no errors, redirect to the homepage
+                location.assign('/');
+            }
+        });
+    </script>
+</body>
+</html>
