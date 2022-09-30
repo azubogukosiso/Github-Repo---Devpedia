@@ -12,6 +12,7 @@ router.get('/:id/bloglikenum', blogController.blog_like_num);
 router.post('/:id/toggle-like', blogController.blog_toggle_like);
 router.post('/:id/post-comment', blogController.blog_post_comment);
 router.get('/:id/view-comments', blogController.blog_view_comments);
-router.get('/:id/editblog', blogController.edit_blog);
+router.get('/:id/blogedit', blogController.blog_edit_get);
+router.post('/:id/blogedit', blogController.blog_edit_post);
 
 module.exports = router;

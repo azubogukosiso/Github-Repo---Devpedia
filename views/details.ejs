@@ -10,14 +10,14 @@
             <p>by <%= blog.author %></p>
         </div>
 
-        <% if (blog.content_image.data == undefined) { %>
+        <% if (blog.header_image.data == undefined) { %>
             <div class="mx-auto my-5">
                 <img class="img-fluid rounded" src="http://localhost:3000/default.png" alt="">
             </div>
         <% } else { %>
             <div class="mx-auto my-5">
-                <img class="img-fluid rounded" src="data:image/<%= blog.content_image.contentType %>;base64,
-                <%= blog.content_image.data.toString('base64') %>" alt="">
+                <img class="img-fluid rounded" src="data:image/<%= blog.header_image.contentType %>;base64,
+                <%= blog.header_image.data.toString('base64') %>" alt="">
             </div>
         <% } %>
 
@@ -27,7 +27,7 @@
 
         <div class="d-flex my-5 justify-content-center">
             <% if (blog.author == user.username) { %>
-                <a class="edit btn btn-secondary text-decoration-none mx-3" data-doc="<%= blog._id %>" href="/blogs/<%= blog.id %>/editblog">edit</a>
+                <a class="edit btn btn-secondary text-decoration-none mx-3" data-doc="<%= blog._id %>" href="/blogs/<%= blog.id %>/blogedit">edit</a>
             <% } else { %>
                 <a class="edit btn btn-secondary text-decoration-none mx-3 d-none" data-doc="<%= blog._id %>">edit</a>
             <% } %>

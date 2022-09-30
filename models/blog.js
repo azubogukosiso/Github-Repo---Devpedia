@@ -22,10 +22,6 @@ const blogSchema = new Schema({
         data: Buffer,
         contentType: String,
     },
-    content_image: {
-        data: Buffer,
-        contentType: String,
-    },
     blog_likes: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'BlogLike'

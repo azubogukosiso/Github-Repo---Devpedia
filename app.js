@@ -3,27 +3,21 @@ const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const fileUpload = require('express-fileupload');
 
-
 const app = express();
 
-// enable files upload
+// enable file upload
 app.use(fileUpload({
     createParentPath: true
 }));
 
 const Blog = require('./models/blog');
 
+// route imports
 const authRoutes = require('./routes/authRoutes');
 const blogRoutes = require('./routes/blogRoutes');
+const profileRoutes = require('./routes/profileRoutes');
 
 const { requireAuth, checkUser } = require('./middleware/authMiddleware');
-
-// const dbURI = 'mongodb+srv://azubogu:kosi2003@nodetuts.acjp84w.mongodb.net/tech-blog';
-// mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
-//     .then((result) => app.listen(3000, console.log('listening...')))
-//     .catch((err) => console.log(err))
-
-// app.listen(3000, console.log('listening...'));
 
 // connection to the dbase
 mongoose.connect('mongodb://localhost:27017/tech-blog',
@@ -53,14 +47,8 @@ app.use(cookieParser());
 // routes
 app.get('*', checkUser); // on every get request made run the 'checkUser' function is run
 
+// rendering the homepage
 app.get('/', (req, res) => {
-    // const blogs = [
-    //     {title: 'This is heading one', snippet: 'This is subheading one'},
-    //     {title: 'This is heading two', snippet: 'This is subheading two'},
-    //     {title: 'This is heading three', snippet: 'This is subheading three'},
-    // ];
-    // res.render('index', {title: 'Blogs', blogs})
-
     Blog.find().sort({ createdAt: -1 })
     .then((result) => {
         res.render('index', {title: 'All Blogs', blogs: result})
@@ -70,17 +58,8 @@ app.get('/', (req, res) => {
     })
 });
 
-app.get('/login', (req, res) => {
-    res.render('login', {title: 'Log In'})
-});
-
-app.get('/signup', (req, res) => {
-    res.render('signup', {title: 'Sign Up'})
-});
-
-app.get('/profile', requireAuth, (req, res) => {
-    res.render('profile', {title: 'Your Profile'})
-});
+// profile routes
+app.use('/profile', requireAuth, profileRoutes);
 
 // blog routes
 app.use('/blogs', requireAuth, blogRoutes);

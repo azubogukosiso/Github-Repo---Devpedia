@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
+const User = require('../models/user'); // importing user model
 
 // check if user is logged in
 // it's fired when user tries to access restricted content

@@ -3,6 +3,8 @@ const app = express();
 app.use(express.static('public'));
 
 const mongoose = require('mongoose');
+
+// importing models
 const Blog = require('../models/blog');
 const BlogLike = require('../models/blogLike');
 const BlogComment = require('../models/blogComment');
@@ -22,7 +24,6 @@ const blog_create_post = async (req, res) => {
             snippet: req.body.snippet,
             body: req.body.body,
             header_image: 'null',
-            content_image: 'null',
         }
         console.log(blog_details);
 
@@ -40,17 +41,14 @@ const blog_create_post = async (req, res) => {
             snippet: req.body.snippet,
             body: req.body.body,
             header_image: req.files.header_image,
-            content_image: req.files.content_image,
         }
         console.log(blog_details);
 
         header_image_gen = blog_details.header_image;
-        content_image_gen = blog_details.content_image;
 
         try{
             await Blog.create(blog_details);
             header_image_gen.mv('./header_images/' + header_image_gen.name);
-            content_image_gen.mv('./content_images/' + content_image_gen.name);
             res.status(201).json({ success: 'Your blog was posted successfully!' });
         }
         catch (err){
@@ -135,11 +133,8 @@ const blog_toggle_like = async(req, res) => {
 
         Blog.findOne({_id: id}).then(async(blog) => { // checks for a blog in the blog collection for a blog with the given id
             if(!blog) { // if there are no blogs like send a msg confirming that
-                return res.status(400).send({
-                    message: 'No blog found',
-                    data: {}
-                });
-            }else { // if there are do the ffg...
+                return res.status(400).send({ message: 'No blog found', data: {} });
+            }else { // if there are do the following...
                 let current_user = req.user; // the id of the user who liked the blog
     
                 User.findById(current_user) // finds the details of the user using the user's id
@@ -208,11 +203,11 @@ const blog_toggle_like = async(req, res) => {
     }    
 }
 
+// handles the posting of comments on a blog
 const blog_post_comment = async (req, res) => {
     const comment = req.body.comment; // passing in the comment
     const user_id = req.user;
     const blog_id = req.params.id;
-    // console.log(comment);
     User.findById(user_id)
         .then(async(result) => {
             console.log(result);
@@ -237,6 +232,7 @@ const blog_post_comment = async (req, res) => {
         })
 }
 
+// handles the viewing of all comments made on a log 
 const blog_view_comments = (req, res) => {
     const blog_id = req.params.id;
     BlogComment.find({blog_id: blog_id}).sort({ createdAt: -1 })
@@ -248,7 +244,8 @@ const blog_view_comments = (req, res) => {
         });
 }
 
-const edit_blog = (req, res) => {
+// renders the edit blog page
+const blog_edit_get = (req, res) => {
     const blog_id = req.params.id;
     console.log(blog_id);
     Blog.findById(blog_id)
@@ -258,6 +255,35 @@ const edit_blog = (req, res) => {
     .catch((err) => {
         console.log(err);
     });
+}
+
+// handles the edition of a particular blog's content
+const blog_edit_post = (req, res) => {
+    Blog.findById(req.params.id)
+        .then(blog => {
+            if (req.files === null) {
+                blog.title = req.body.title;
+                blog.snippet = req.body.snippet;
+                blog.body = req.body.body;
+
+                blog.save()
+                    .then(() => res.json({ success: 'Your blog has been updated!' }))
+                    .catch(err => res.status(400).json({ error: 'There was a problem in updating your blog', err }));
+            } else{
+                blog.title = req.body.title;
+                blog.snippet = req.body.snippet;
+                blog.body = req.body.body;
+                blog.header_image = req.files.header_image;
+
+                blog.save()
+                    .then(() => {
+                        req.files.header_image.mv('./header_images/' + req.files.header_image.name);
+                        res.json({ success: 'Your blog has been updated!' })
+                    })
+                    .catch(err => res.status(400).json({ error: 'There was a problem in updating your blog', err }));
+            }
+        })
+        .catch(err => res.status(400).json('Error: ' + err));
 }
 
 module.exports = {
@@ -270,5 +296,6 @@ module.exports = {
     blog_toggle_like,
     blog_post_comment,
     blog_view_comments,
-    edit_blog
+    blog_edit_get,
+    blog_edit_post
 }

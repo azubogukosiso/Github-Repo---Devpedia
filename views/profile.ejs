@@ -16,17 +16,161 @@
             <% } else { %>    
                 <div class="image-border mx-auto mb-4">
                     <img class="image" src="data:image/<%= user.profile_image.contentType %>;base64,
-                    <%= user.profile_image.data.toString('base64') %>" >
+                    <%= user.profile_image.data.toString('base64') %>">
                 </div>
             <% } %>
-            <div class="text-center"><span class="text-center">Username: <%= user.username %></span><span class="small"><a href="" class="ms-3">change</a></span></div>
-            <div class="text-center my-3"><span class="text-center">User email: <%= user.email %></span><span class="small"><a href="" class="ms-3">change</a></span></div>
-            <div class="text-center"><a href="" class="btn btn-primary">change password</a></div>
+
+            <form class="username-form mb-4">
+                <div class="text-center">
+                    <span class="text-center mx-2">
+                        Username: <input type="text" name="username" value="<%= user.username %>" required>
+                    </span>
+                    <button class="rounded btn-primary">change</button>
+                    <div class="username-msg-area rounded my-3 w-50 mx-auto"></div>
+                </div>
+            </form>
+
+            <form class="email-form mb-4">
+                <div class="text-center">
+                    <span class="text-center mx-2">
+                        User email: <input type="text" name="email" value="<%= user.email %>" required>
+                    </span>
+                    <button class="rounded btn-primary">change</button>
+                    <div class="email-msg-area rounded my-3 w-50 mx-auto"></div>
+                </div>
+            </form>
+            
+            <form class="password-form mb-4">
+                <div class="text-center">
+                    <span class="text-center mx-2">
+                        Enter a new password: <input type="password" name="password" required>
+                    </span>
+                    <button class="rounded btn-primary">change</button>
+                    <div class="password-msg-area rounded my-3 w-50 mx-auto"></div>
+                </div>
+            </form>
         <% } %>
 
-        
+        <a class="User-ID-Prov btn btn-primary" hidden data-doc="<%= user._id %>"></a>
     </div>
 
     <%- include('./partials/footer.ejs') %>
+
+    <script>
+        const usernameForm = document.querySelector('form.username-form');
+        const emailForm = document.querySelector('form.email-form');
+        const passwordForm = document.querySelector('form.password-form');
+        const userIdProv = document.querySelector('a.User-ID-Prov');
+        const usernameMsgArea = document.querySelector('div.username-msg-area');
+        const emailMsgArea = document.querySelector('div.email-msg-area');
+        const passwordMsgArea = document.querySelector('div.password-msg-area');
+
+        // username change
+        usernameForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const response = await fetch(`/profile/${userIdProv.dataset.doc}/changeusername`, {
+                method: 'POST',
+                body: new FormData(usernameForm)
+            });
+            const data = await response.json();
+
+            if (data.info) {
+                usernameMsgArea.classList.add('alert-warning', 'border', 'border-warning', 'py-2');
+                usernameMsgArea.innerHTML = data.info;
+
+                setTimeout(() => {
+                    usernameMsgArea.classList.remove('alert-warning', 'border', 'border-warning', 'py-2');
+                    usernameMsgArea.innerHTML = '';
+                }, 5000)
+            }
+
+            if (data.error) {
+                console.log(data.error);
+            }
+
+            if (data.success) {
+                usernameMsgArea.classList.add('alert-success', 'border', 'border-success', 'py-2');
+                usernameMsgArea.innerHTML = data.success;
+
+                setTimeout(() => {
+                    usernameMsgArea.classList.remove('alert-success', 'border', 'border-success', 'py-2');
+                    usernameMsgArea.innerHTML = '';
+                }, 5000)
+            }
+        });
+
+
+
+        // email change
+        emailForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const response = await fetch(`/profile/${userIdProv.dataset.doc}/changeuseremail`, {
+                method: 'POST',
+                body: new FormData(emailForm)
+            });
+            const data = await response.json();
+
+            if (data.info) {
+                emailMsgArea.classList.add('alert-warning', 'border', 'border-warning', 'py-2');
+                emailMsgArea.innerHTML = data.info;
+
+                setTimeout(() => {
+                    emailMsgArea.classList.remove('alert-warning', 'border', 'border-warning', 'py-2');
+                    emailMsgArea.innerHTML = '';
+                }, 5000)
+            }
+
+            if (data.error) {
+                console.log(data.error);
+            }
+
+            if (data.success) {
+                emailMsgArea.classList.add('alert-success', 'border', 'border-success', 'py-2');
+                emailMsgArea.innerHTML = data.success;
+
+                setTimeout(() => {
+                    emailMsgArea.classList.remove('alert-success', 'border', 'border-success', 'py-2');
+                    emailMsgArea.innerHTML = '';
+                }, 5000)
+            }
+        });
+
+        // password change
+        passwordForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const response = await fetch(`profile/${userIdProv.dataset.doc}/changeuserpassword`, {
+                method: 'PUT',
+                body: new FormData(passwordForm)
+            });
+            const data = await response.json();
+
+            if (data.info) {
+                passwordMsgArea.classList.add('alert-warning', 'border', 'border-warning', 'py-2');
+                passwordMsgArea.innerHTML = data.info;
+
+                setTimeout(() => {
+                    passwordMsgArea.classList.remove('alert-warning', 'border', 'border-warning', 'py-2');
+                    passwordMsgArea.innerHTML = '';
+                }, 5000)
+            }
+
+            if (data.error) {
+                console.log(data.error);
+            }
+
+            if (data.success) {
+                passwordMsgArea.classList.add('alert-success', 'border', 'border-success', 'py-2');
+                passwordMsgArea.innerHTML = data.success;
+
+                setTimeout(() => {
+                    passwordMsgArea.classList.remove('alert-success', 'border', 'border-success', 'py-2');
+                    passwordMsgArea.innerHTML = '';
+                }, 5000)
+            }
+        });
+    </script>
 </body>
 </html>

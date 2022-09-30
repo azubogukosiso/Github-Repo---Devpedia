@@ -124,7 +124,7 @@ const login_post = async (req, res) => {
 
 // logs out a user
 const logout_get = (req, res) => {
-    res.cookie('jwt', '', { maxAge: 1 });
+    res.cookie('jwt', '', { maxAge: 1 }); // creates and sends a cookie with expiry date of 1ms
     res.redirect('/');
 }
 

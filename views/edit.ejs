@@ -10,7 +10,6 @@
         <form class="justify-content-center d-flex flex-column">
             <% if (user) { %>
                 <input type="text" name="author" value="<%= blog.author %>" hidden required><br><br>
-                <!-- <p>Blog Author: <%= user.username %></p> -->
             <% } %>
             
             <label for="title">Blog Title:</label>
@@ -20,24 +19,61 @@
             <input type="text" name="snippet" value="<%= blog.snippet %>" required><br><br>
 
             <label for="body">Blog Body:</label>
-            <!-- <input type="text" name="body" value="<%= blog.body %>" required><br><br> -->
-            <textarea name="body" rows="5" aria-valuetext="<%= blog.body %>" required></textarea><br><br>
-
-            <label for="image">Select a Header Image (optional):</label>
-            <input type="file" name="header_image" id="header_image"><br><br>
-
-            <label for="image">Select a Content Image (optional):</label>
-            <input type="file" name="content_image" id="content_image"><br><br>
+            <textarea name="body" rows="5" required><%= blog.body %></textarea><br><br>
             
+            <div class="d-md-flex text-center">
+                <div class="text-center">
+                    <label for="image">Click image to select a Header Image (optional):</label><br><br>
+                    <div class="image-container" onclick="document.getElementById('header_image').click()">
+                        <% if (blog.header_image.data == undefined) { %>
+                            <img src="http://localhost:3000/default.png" alt="" id="headerImgPrev" class="img-fluid rounded w-75">
+                        <% } else { %>
+                            <img src="data:image/<%= blog.header_image.contentType %>;base64,
+                            <%= blog.header_image.data.toString('base64') %>" alt="" id="headerImgPrev" class="img-fluid rounded w-75">
+                        <% } %>
+                    </div><br>
+                    <input type="file" name="header_image" class="header_image" id="header_image" style="visibility: hidden;">
+                    <p id="headerErrorMsg"></p>
+                </div>
+            </div><br><br>
+
+            <a class="Blog-ID-Prov btn btn-primary" hidden data-doc="<%= blog._id %>"></a>
+
             <button class="submit btn-primary px-3 py-2">Submit</button>
         </form>
     </div>
     
     <%- include('./partials/footer.ejs') %>
+    
     <script>
         const form = document.querySelector('form');
         const headerImg = document.getElementById('header_image');
-        const contentImg = document.getElementById('content_image');
+        const headerImgPrev = document.getElementById('headerImgPrev');
+        const headerErrorMessage = document.getElementById('headerErrorMsg');
+        const blogIdProv = document.querySelector('a.Blog-ID-Prov');
+
+        headerImg.addEventListener('change', (e) => {
+            const headerImgD = document.querySelector('input[type=file].header_image').files[0];
+            previewHeaderImage(headerImgD);
+        });
+
+        const previewHeaderImage = (imgD) => {
+            const reader = new FileReader();
+            reader.addEventListener("load", function() {
+                headerImgPrev.src = reader.result;
+            })
+            if(imgD){
+                if (imgD.type === "image/jpeg" || imgD.type === "image/png" || imgD.type === "image/jpeg" || imgD.type === "image/jpg" || imgD.type === "image/gif"){
+                    reader.readAsDataURL(imgD);
+                    headerErrorMessage.innerText = "";
+                    if (imgD.size > 2 * 1024 * 1024) {
+                        headerErrorMessage.innerText = "File size should be less than 2MB";
+                    }
+                } else {
+                    headerErrorMessage.innerText = "File type should be an image";
+                }
+            }
+        };
 
         const checkFile = (file) => {
             if (!file){
@@ -64,10 +100,9 @@
 
             // run fxn to check the files' validity
             checkFile(headerImg.files[0]);
-            checkFile(contentImg.files[0]);
 
             // sends the form data and gets response
-            const response = await fetch('/blogs', {
+            const response = await fetch(`/blogs/${blogIdProv.dataset.doc}/blogedit`, {
                 method: 'POST',
                 body: new FormData(form)
             });
@@ -77,7 +112,7 @@
                 console.log(data.error);
             }
             if (data.success) { // if there are no errors, redirect to the homepage
-                location.assign('/');
+                location.assign(`/blogs/${blogIdProv.dataset.doc}`);
             }
         });
     </script>

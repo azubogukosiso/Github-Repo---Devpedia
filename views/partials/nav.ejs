@@ -11,6 +11,14 @@
                     <li class="nav-item">
                         <p class="nav-link">Hi there, <%= user.username %></p>
                     </li>
+                    <% if (user.profile_image != '{}') { %>
+                        <li class="me-4">
+                            <div class="profile-img-icon">
+                                <img src="data:image/<%= user.profile_image.contentType %>;base64,
+                                <%= user.profile_image.data.toString('base64') %>" alt="">
+                            </div>
+                        </li>
+                    <% } %>
                     <li class="nav-item">
                         <a class="nav-link" href="/blogs/create-blog">Create Blog</a>
                     </li>
