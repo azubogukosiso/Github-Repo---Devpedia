@@ -5,17 +5,17 @@
 
     <%- include('./partials/nav.ejs') %>
 
-    <div class="container">
+    <div class="container w-75">
         <h2 class="my-5 text-center">Log In</h2>
 
         <form class="justify-content-center d-flex flex-column">
             <label for="email">Enter email:</label>
             <input type="text" name="email" required>
-            <div class="email error"></div><br>
+            <div style="transition: 0.05s;" class="email error"></div><br>
 
             <label for="password">Enter password:</label>
             <input type="password" name="password" required>
-            <div class="password error"></div><br>
+            <div style="transition: 0.05s;" class="password error"></div><br>
 
             <button class="submit btn-primary px-3 py-2">Log In</button>
         </form>
@@ -55,8 +55,26 @@
                 const data = await res.json();
                 console.log(data);
                 if (data.errors) {
-                    emailError.textContent = data.errors.email;
-                    passwordError.textContent = data.errors.password;
+                    if (data.errors.email) {
+                        console.log(data.errors.email);
+                        emailError.classList.add('alert-warning', 'rounded', 'text-center', 'border', 'border-warning', 'py-2', 'my-3');
+                        emailError.textContent = data.errors.email;
+
+                        setTimeout(() => {
+                            emailError.classList.remove('alert-warning', 'rounded', 'border', 'border-warning', 'py-2', 'my-3');
+                            emailError.textContent = '';
+                        }, 5000)
+                    }
+                    else if (data.errors.password) {
+                        console.log(data.errors.password);
+                        passwordError.classList.add('alert-warning', 'rounded', 'text-center', 'border', 'border-warning', 'py-2', 'my-3');
+                        passwordError.textContent = data.errors.password;
+
+                        setTimeout(() => {
+                            passwordError.classList.remove('alert-warning', 'rounded', 'border', 'border-warning', 'py-2', 'my-3');
+                            passwordError.textContent = '';
+                        }, 5000)
+                    }
                 }
                 if (data.user) {
                     location.assign('/');

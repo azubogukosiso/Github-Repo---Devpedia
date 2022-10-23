@@ -1,10 +1,10 @@
 body{
-    font-family: raleway;
+    font-family: 'Raleway', sans-serif;
     background: rgb(238, 243, 238);
 }
 
 .navbar-brand{
-    font-family: cinzel;
+    font-family: 'Cinzel', serif;
 }
 
 .profile-img-icon{

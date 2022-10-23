@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light pt-5 pb-0">
+<nav class="navbar navbar-expand-lg navbar-light pt-md-4">
     <div class="container">
         <a class="navbar-brand mx-auto" href="/"><h1>👨🏾‍💻Devpedia</h1></a>
         <button class="navbar-toggler mx-auto my-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -12,7 +12,7 @@
                         <p class="nav-link">Hi there, <%= user.username %></p>
                     </li>
                     <% if (user.profile_image != '{}') { %>
-                        <li class="me-4">
+                        <li class="me-md-4 d-flex justify-content-center">
                             <div class="profile-img-icon">
                                 <img src="data:image/<%= user.profile_image.contentType %>;base64,
                                 <%= user.profile_image.data.toString('base64') %>" alt="">
@@ -40,3 +40,7 @@
         </div>
     </div>
 </nav>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Raleway:wght@100;200;300;400;500;600&display=swap" rel="stylesheet">

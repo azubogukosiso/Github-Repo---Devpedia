@@ -210,13 +210,10 @@ const blog_post_comment = async (req, res) => {
     const blog_id = req.params.id;
     User.findById(user_id)
         .then(async(result) => {
-            console.log(result);
             const username = result.username;
-            console.log(username);
 
             try{
                 const commentDoc = await BlogComment.create({ username, comment, blog_id, user_id });
-                console.log(commentDoc);
                 await Blog.updateOne({
                     _id: blog_id
                 }, {

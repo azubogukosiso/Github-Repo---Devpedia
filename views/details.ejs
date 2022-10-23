@@ -5,53 +5,55 @@
     <%- include('./partials/nav.ejs') %>
 
     <div class="details container">
-        <div class="text-center my-5">
-            <h2><%= blog.title %></h2>
-            <p>by <%= blog.author %></p>
-        </div>
-
-        <% if (blog.header_image.data == undefined) { %>
-            <div class="mx-auto my-5">
-                <img class="img-fluid rounded" src="http://localhost:3000/default.png" alt="">
+            <div class="text-center my-5">
+                <h2><%= blog.title %></h2>
+                <p>by <%= blog.author %></p>
             </div>
-        <% } else { %>
-            <div class="mx-auto my-5">
-                <img class="img-fluid rounded" src="data:image/<%= blog.header_image.contentType %>;base64,
-                <%= blog.header_image.data.toString('base64') %>" alt="">
+        
+        <div class="container">
+            <% if (blog.header_image.data == undefined) { %>
+                <div class="mx-auto my-5">
+                    <img class="img-fluid rounded" src="http://localhost:3001/default.png" alt="">
+                </div>
+            <% } else { %>
+                <div class="mx-auto my-5">
+                    <img class="img-fluid rounded" src="data:image/<%= blog.header_image.contentType %>;base64,
+                    <%= blog.header_image.data.toString('base64') %>" alt="">
+                </div>
+            <% } %>
+    
+            <div>
+                <p><%= blog.body %></p>
             </div>
-        <% } %>
-
-        <div>
-            <p><%= blog.body %></p>
+    
+            <div class="d-flex my-5 justify-content-center">
+                <% if (blog.author == user.username) { %>
+                    <a class="edit btn btn-secondary text-decoration-none mx-3" data-doc="<%= blog._id %>" href="/blogs/<%= blog.id %>/blogedit">edit</a>
+                <% } else { %>
+                    <a class="edit btn btn-secondary text-decoration-none mx-3 d-none" data-doc="<%= blog._id %>">edit</a>
+                <% } %>
+                <% if (blog.author == user.username) { %>
+                    <a class="delete btn btn-danger text-decoration-none mx-3" data-doc="<%= blog._id %>">delete</a>
+                <% } else { %>
+                    <a class="delete btn btn-danger text-decoration-none mx-3 d-none" data-doc="<%= blog._id %>">delete</a>
+                <% } %>
+                <a id="LikeBtn" class="like btn btn-light border-success text-decoration-none mx-3" data-doc="<%= blog._id %>">like</a>
+                <span id="like-count"></span>
+            </div>
+    
+            <div>
+                <form class="justify-content-center d-flex flex-column">
+                    <label for="comment">Drop a Comment</label>
+                    <textarea name="comment" required></textarea><br>
+                    <button class="submit btn-primary px-3 py-2">Submit Comment</button>
+                    <p id="alert" class="confirm-submit text-center my-3 px-3 py-2"></p>
+                </form>
+            </div>
+    
+            <a class="view-comments btn btn-primary" data-doc="<%= blog._id %>">show comments</a>
+    
+            <div class="comments mt-5 px-3 py-3" id="comments"></div>
         </div>
-
-        <div class="d-flex my-5 justify-content-center">
-            <% if (blog.author == user.username) { %>
-                <a class="edit btn btn-secondary text-decoration-none mx-3" data-doc="<%= blog._id %>" href="/blogs/<%= blog.id %>/blogedit">edit</a>
-            <% } else { %>
-                <a class="edit btn btn-secondary text-decoration-none mx-3 d-none" data-doc="<%= blog._id %>">edit</a>
-            <% } %>
-            <% if (blog.author == user.username) { %>
-                <a class="delete btn btn-danger text-decoration-none mx-3" data-doc="<%= blog._id %>">delete</a>
-            <% } else { %>
-                <a class="delete btn btn-danger text-decoration-none mx-3 d-none" data-doc="<%= blog._id %>">delete</a>
-            <% } %>
-            <a id="LikeBtn" class="like btn btn-light border-success text-decoration-none mx-3" data-doc="<%= blog._id %>">like</a>
-            <span id="like-count"></span>
-        </div>
-
-        <div>
-            <form class="justify-content-center d-flex flex-column">
-                <label for="comment">Drop a Comment</label>
-                <textarea name="comment" required></textarea><br>
-                <button class="submit btn-primary px-3 py-2">Submit Comment</button>
-                <p id="alert" class="confirm-submit text-center my-3 px-3 py-2"></p>
-            </form>
-        </div>
-
-        <a class="view-comments btn btn-primary" data-doc="<%= blog._id %>">show comments</a>
-
-        <div class="comments mt-5 px-3 py-3" id="comments"></div>
     </div>
 
     <%- include('./partials/footer.ejs') %>

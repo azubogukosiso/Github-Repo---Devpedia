@@ -20,34 +20,34 @@
                 </div>
             <% } %>
 
-            <form class="username-form mb-4">
-                <div class="text-center">
-                    <span class="text-center mx-2">
+            <form style="flex-direction: column;" class="username-form text-center mb-3 d-flex align-items-center justify-content-center">
+                <div>
+                    <span class="me-2">
                         Username: <input type="text" name="username" value="<%= user.username %>" required>
                     </span>
-                    <button class="rounded btn-primary">change</button>
-                    <div class="username-msg-area rounded my-3 w-50 mx-auto"></div>
+                    <button class="rounded btn-primary my-2">change</button>
                 </div>
+                <div style="transition: 0.05s;" class="username-msg-area rounded w-50 mx-auto text-center"></div>
             </form>
 
-            <form class="email-form mb-4">
-                <div class="text-center">
-                    <span class="text-center mx-2">
+            <form style="flex-direction: column;" class="email-form text-center mb-3 d-flex align-items-center justify-content-center">
+                <div>
+                    <span class="me-2">
                         User email: <input type="text" name="email" value="<%= user.email %>" required>
                     </span>
-                    <button class="rounded btn-primary">change</button>
-                    <div class="email-msg-area rounded my-3 w-50 mx-auto"></div>
-                </div>
+                    <button class="rounded btn-primary my-2">change</button>
+                </div>    
+                <div style="transition: 0.05s;" class="email-msg-area rounded w-50 mx-auto text-center"></div>
             </form>
             
-            <form class="password-form mb-4">
-                <div class="text-center">
-                    <span class="text-center mx-2">
+            <form style="flex-direction: column;" class="password-form text-center mb-3 d-flex align-items-center justify-content-center">
+                <div>
+                    <span class="me-2">
                         Enter a new password: <input type="password" name="password" required>
                     </span>
-                    <button class="rounded btn-primary">change</button>
-                    <div class="password-msg-area rounded my-3 w-50 mx-auto"></div>
+                    <button class="rounded btn-primary my-2">change</button>
                 </div>
+                <div style="transition: 0.05s;" class="password-msg-area rounded w-50 mx-auto text-center"></div>
             </form>
         <% } %>
 
@@ -76,11 +76,11 @@
             const data = await response.json();
 
             if (data.info) {
-                usernameMsgArea.classList.add('alert-warning', 'border', 'border-warning', 'py-2');
+                usernameMsgArea.classList.add('alert-warning', 'border', 'border-warning', 'py-2', 'my-3');
                 usernameMsgArea.innerHTML = data.info;
 
                 setTimeout(() => {
-                    usernameMsgArea.classList.remove('alert-warning', 'border', 'border-warning', 'py-2');
+                    usernameMsgArea.classList.remove('alert-warning', 'border', 'border-warning', 'py-2', 'my-3');
                     usernameMsgArea.innerHTML = '';
                 }, 5000)
             }
@@ -90,11 +90,11 @@
             }
 
             if (data.success) {
-                usernameMsgArea.classList.add('alert-success', 'border', 'border-success', 'py-2');
+                usernameMsgArea.classList.add('alert-success', 'border', 'border-success', 'py-2', 'my-3');
                 usernameMsgArea.innerHTML = data.success;
 
                 setTimeout(() => {
-                    usernameMsgArea.classList.remove('alert-success', 'border', 'border-success', 'py-2');
+                    usernameMsgArea.classList.remove('alert-success', 'border', 'border-success', 'py-2', 'my-3');
                     usernameMsgArea.innerHTML = '';
                 }, 5000)
             }
@@ -113,11 +113,11 @@
             const data = await response.json();
 
             if (data.info) {
-                emailMsgArea.classList.add('alert-warning', 'border', 'border-warning', 'py-2');
+                emailMsgArea.classList.add('alert-warning', 'border', 'border-warning', 'py-2', 'my-3');
                 emailMsgArea.innerHTML = data.info;
 
                 setTimeout(() => {
-                    emailMsgArea.classList.remove('alert-warning', 'border', 'border-warning', 'py-2');
+                    emailMsgArea.classList.remove('alert-warning', 'border', 'border-warning', 'py-2', 'my-3');
                     emailMsgArea.innerHTML = '';
                 }, 5000)
             }
@@ -127,11 +127,11 @@
             }
 
             if (data.success) {
-                emailMsgArea.classList.add('alert-success', 'border', 'border-success', 'py-2');
+                emailMsgArea.classList.add('alert-success', 'border', 'border-success', 'py-2', 'my-3');
                 emailMsgArea.innerHTML = data.success;
 
                 setTimeout(() => {
-                    emailMsgArea.classList.remove('alert-success', 'border', 'border-success', 'py-2');
+                    emailMsgArea.classList.remove('alert-success', 'border', 'border-success', 'py-2', 'my-3');
                     emailMsgArea.innerHTML = '';
                 }, 5000)
             }
@@ -148,11 +148,11 @@
             const data = await response.json();
 
             if (data.info) {
-                passwordMsgArea.classList.add('alert-warning', 'border', 'border-warning', 'py-2');
+                passwordMsgArea.classList.add('alert-warning', 'border', 'border-warning', 'py-2', 'my-3');
                 passwordMsgArea.innerHTML = data.info;
 
                 setTimeout(() => {
-                    passwordMsgArea.classList.remove('alert-warning', 'border', 'border-warning', 'py-2');
+                    passwordMsgArea.classList.remove('alert-warning', 'border', 'border-warning', 'py-2', 'my-3');
                     passwordMsgArea.innerHTML = '';
                 }, 5000)
             }
@@ -162,11 +162,11 @@
             }
 
             if (data.success) {
-                passwordMsgArea.classList.add('alert-success', 'border', 'border-success', 'py-2');
+                passwordMsgArea.classList.add('alert-success', 'border', 'border-success', 'py-2', 'my-3');
                 passwordMsgArea.innerHTML = data.success;
 
                 setTimeout(() => {
-                    passwordMsgArea.classList.remove('alert-success', 'border', 'border-success', 'py-2');
+                    passwordMsgArea.classList.remove('alert-success', 'border', 'border-success', 'py-2', 'my-3');
                     passwordMsgArea.innerHTML = '';
                 }, 5000)
             }

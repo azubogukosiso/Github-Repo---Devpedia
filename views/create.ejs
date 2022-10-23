@@ -5,7 +5,7 @@
 
     <%- include('./partials/nav.ejs') %>
 
-    <div class="container">
+    <div class="container w-75">
         <h2 class="my-5 text-center">Create a New Blog</h2>
 
         <form class="justify-content-center d-flex flex-column">
@@ -26,7 +26,7 @@
                 <div class="text-center">
                     <label for="image">Select a Header Image (optional):</label><br><br>
                     <div class="image-container" onclick="document.getElementById('header_image').click()">
-                        <img src="http://localhost:3000/default.png" alt="" id="headerImgPrev" class="img-fluid rounded w-75">
+                        <img src="http://localhost:3001/default.png" alt="" id="headerImgPrev" class="img-fluid rounded w-75">
                     </div><br>
                     <input type="file" name="header_image" class="header_image" id="header_image" style="visibility: hidden;">
                     <p id="headerErrorMsg"></p>
